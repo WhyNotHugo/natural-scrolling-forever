@@ -1,0 +1,11 @@
+[Unit]
+Description=Enable natural scrolling for current and future devices.
+Documentation=https://github.com/WhyNotHugo/natural-scrolling-forever
+After=xorg.target
+Requires=xorg.target
+
+[Service]
+ExecStart=/usr/bin/natural-scrolling-forever
+
+[Install]
+WantedBy=xorg.target

@@ -1,0 +1,33 @@
+#!/usr/bin/python
+#
+# Monitors udev devices changes, and re-enables natural scrolling whenever new
+# input devices are plugged in.
+import subprocess
+import sys
+
+import pyudev
+
+context = pyudev.Context()
+monitor = pyudev.Monitor.from_netlink(context)
+monitor.filter_by('input')
+
+
+def naturalize():
+    try:
+        stdout = subprocess.check_output('natural-scrolling')
+    except subprocess.CalledProcessError:
+        sys.exit(1)
+    else:
+        stdout = stdout.decode().strip()
+        stdout = '\n'.join([f'  {line}' for line in stdout.splitlines()])
+        print(stdout)
+
+
+print('Starting up...')
+naturalize()
+
+print('Monitoring for new input devices...')
+for device in iter(monitor.poll, None):
+    if device.action == 'add':
+        print('New input device detected.')
+        naturalize()
